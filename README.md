@@ -1,7 +1,3 @@
-Berikut adalah contoh README dengan sudut pandang yang tidak terkesan sebagai tugas, melainkan sebagai implementasi sistem perpustakaan sekolah:
-
----
-
 # Database Perpustakaan Sekolah
 
 Repository ini berisi implementasi sistem perpustakaan sekolah. Sistem ini dirancang untuk mengelola data buku, siswa, dan peminjaman dengan menggunakan database MySQL, serta dilengkapi dengan berbagai stored procedure untuk operasi data yang dinamis. File import database juga disediakan untuk memudahkan setup awal.
