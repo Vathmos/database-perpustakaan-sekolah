@@ -366,7 +366,7 @@ CALL insert_peminjaman(15, 7, "2025-02-01", "2025-02-08", "Dipinjam");
 CALL insert_peminjaman(7, 1, "2025-01-29", "2025-02-05", "Dikembalikan");
 CALL insert_peminjaman(8, 9, "2025-02-03", "2025-02-10", "Dipinjam");
 CALL insert_peminjaman(13, 4, "2025-01-27", "2025-02-03", "Dikembalikan");
-CALL insert_peminjaman(10, 11, "	2025-02-01", "2025-02-08", "Dipinjam");
+CALL insert_peminjaman(10, 11, "2025-02-01", "2025-02-08", "Dipinjam");
 
 CALL list_siswa_pinjam();
 
