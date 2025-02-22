@@ -19,7 +19,7 @@ CREATE TABLE peminjaman (
     id_peminjaman INT PRIMARY KEY AUTO_INCREMENT,
     id_siswa INT,
     id_buku INT,
-    tgl_pinjam DATE DEFAULT(CURRENT_DATE),
+    tgl_pinjam DATE,
     tgl_kembali DATE,
     status ENUM("Dikembalikan", "Dipinjam")
 );

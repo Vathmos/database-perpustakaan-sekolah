@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 22, 2025 at 03:04 AM
+-- Generation Time: Feb 22, 2025 at 08:54 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -25,6 +25,18 @@ DELIMITER $$
 --
 -- Procedures
 --
+CREATE DEFINER=`root`@`localhost` PROCEDURE `delete_buku` (`p_id_buku` INT)   BEGIN
+ DELETE FROM buku WHERE id_buku = p_id_buku;
+ END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `delete_peminjaman` (`p_id_peminjaman` INT)   BEGIN
+ DELETE FROM peminjaman WHERE id_peminjaman = p_id_peminjaman;
+ END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `delete_siswa` (`p_id_siswa` INT)   BEGIN
+ DELETE FROM siswa WHERE id_siswa = p_id_siswa;
+ END$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_buku` (`p_judul_buku` VARCHAR(50), `p_penulis` VARCHAR(50), `p_kategori` VARCHAR(30), `p_stok` INT)   BEGIN
  INSERT INTO buku(judul_buku, penulis, kategori, stok) 
  VALUES (p_judul_buku, p_penulis, p_kategori, p_stok);
@@ -39,6 +51,12 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_siswa` (`p_nama` VARCHAR(50)
  INSERT INTO siswa(nama, kelas) VALUES (p_nama, p_kelas);
  END$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `kembalikan_buku` (`p_id_peminjaman` INT)   BEGIN
+UPDATE peminjaman 
+SET status = "Dikembalikan", tgl_kembali = CURRENT_DATE() 
+WHERE id_peminjaman = p_id_peminjaman;
+END$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `list_buku` ()   BEGIN
 SELECT b.id_buku,
 b.judul_buku,
@@ -52,7 +70,10 @@ ORDER BY b.id_buku;
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `list_siswa` ()   BEGIN
-SELECT s.id_siswa, s.nama AS nama_peminjam, b.judul_buku AS buku_yang_dipinjam, p.tgl_pinjam AS tanggal_pinjam
+SELECT s.id_siswa,
+s.nama AS nama_peminjam, 
+b.judul_buku AS buku_yang_dipinjam,
+p.tgl_pinjam AS tanggal_pinjam
 FROM siswa s
 LEFT JOIN peminjaman p ON s.id_siswa = p.id_siswa
 LEFT JOIN buku b ON b.id_buku = p.id_buku
@@ -60,26 +81,16 @@ ORDER BY s.id_siswa;
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `list_siswa_pinjam` ()   BEGIN
-SELECT s.id_siswa, s.nama AS nama,b.judul_buku AS buku_yang_dipinjam, p.tgl_pinjam AS tanggal_pinjam
+SELECT s.nama AS nama_peminjam,b.judul_buku AS buku_yang_dipinjam, p.tgl_pinjam AS tanggal_pinjam
 FROM siswa s
 JOIN peminjaman p ON s.id_siswa = p.id_siswa
-JOIN buku b ON b.id_buku = p.id_buku
-ORDER BY s.id_siswa;
+JOIN buku b ON b.id_buku = p.id_buku;
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `reset_tables` ()   BEGIN
 TRUNCATE TABLE buku;
 TRUNCATE TABLE siswa;
 TRUNCATE TABLE peminjaman;
-END$$
-
-CREATE DEFINER=`root`@`localhost` PROCEDURE `return_book` (`p_id_peminjaman` INT)   BEGIN
-UPDATE peminjaman 
-SET status = "Dikembalikan", tgl_kembali = CURRENT_DATE() WHERE id_peminjaman = p_id_peminjaman;
-END$$
-
-CREATE DEFINER=`root`@`localhost` PROCEDURE `select_all_buku` ()   BEGIN
-SELECT * FROM buku;
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `select_all_peminjaman` ()   BEGIN
@@ -89,6 +100,32 @@ END$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `select_all_siswa` ()   BEGIN
 SELECT * FROM siswa;
 END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `update_buku` (`p_id_buku` INT, `p_judul_buku` VARCHAR(50), `p_penulis` VARCHAR(50), `p_kategori` VARCHAR(30), `p_stok` INT)   BEGIN
+ UPDATE buku SET 
+ judul_buku = p_judul_buku,
+ penulis = p_penulis,
+ kategori = p_kategori,
+ stok = p_stok 
+ WHERE id_buku = p_id_buku;
+ END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `update_peminjaman` (`p_id_peminjaman` INT, `p_id_buku` INT, `p_id_siswa` INT, `p_tgl_pinjam` DATE, `p_tgl_kembali` DATE, `p_status` ENUM("Dikembalikan","Dipinjam"))   BEGIN
+ UPDATE peminjaman SET 
+ id_buku = p_id_buku,
+ id_siswa = p_id_siswa,
+ tgl_pinjam = p_tgl_pinjam,
+ tgl_kembali = p_tgl_kembali,
+ status = p_status 
+ WHERE id_peminjaman = p_id_peminjaman;
+ END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `update_siswa` (`p_id_siswa` INT, `p_nama` VARCHAR(50), `p_kelas` VARCHAR(10))   BEGIN
+ UPDATE siswa SET 
+ nama = p_nama,
+ kelas = p_kelas
+ WHERE id_siswa = p_id_siswa;
+ END$$
 
 DELIMITER ;
 
@@ -112,10 +149,10 @@ CREATE TABLE `buku` (
 
 INSERT INTO `buku` (`id_buku`, `judul_buku`, `penulis`, `kategori`, `stok`) VALUES
 (1, 'Algoritma dan Pemrograman', 'Andi Wijaya', 'Teknologi', 5),
-(2, 'Dasar-dasar Database', 'Budi Santoso', 'Teknologi', 7),
-(3, 'Matematika Diskrit', 'Rina Sari', 'Matematika', 4),
+(2, 'Dasar-dasar Database', 'Budi Santoso', 'Teknologi', 6),
+(3, 'Matematika Diskrit', 'Rina Sari', 'Matematika', 5),
 (4, 'Sejarah Dunia', 'John Smith', 'Sejarah', 3),
-(5, 'Pemrograman Web dengan PHP', 'Eko Prasetyo', 'Teknologi', 8),
+(5, 'Pemrograman Web dengan PHP', 'Eko Prasetyo', 'Teknologi', 9),
 (6, 'Sistem Operasi', 'Dian Kurniawan', 'Teknologi', 6),
 (7, 'Jaringan Komputer', 'Ahmad Fauzi', 'Teknologi', 5),
 (8, 'Cerita Rakyat Nusantara', 'Lestari Dewi', 'Sastra', 9),
@@ -137,7 +174,7 @@ CREATE TABLE `peminjaman` (
   `id_peminjaman` int(11) NOT NULL,
   `id_siswa` int(11) DEFAULT NULL,
   `id_buku` int(11) DEFAULT NULL,
-  `tgl_pinjam` date DEFAULT curdate(),
+  `tgl_pinjam` date DEFAULT NULL,
   `tgl_kembali` date DEFAULT NULL,
   `status` enum('Dikembalikan','Dipinjam') DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -157,6 +194,30 @@ INSERT INTO `peminjaman` (`id_peminjaman`, `id_siswa`, `id_buku`, `tgl_pinjam`, 
 (8, 8, 9, '2025-02-03', '2025-02-10', 'Dipinjam'),
 (9, 13, 4, '2025-01-27', '2025-02-03', 'Dikembalikan'),
 (10, 10, 11, '2025-02-01', '2025-02-08', 'Dipinjam');
+
+--
+-- Triggers `peminjaman`
+--
+DELIMITER $$
+CREATE TRIGGER `after_insert_peminjaman` AFTER INSERT ON `peminjaman` FOR EACH ROW BEGIN
+IF NEW.status = "Dipinjam" THEN
+UPDATE buku SET stok = stok - 1 WHERE id_buku = NEW.id_buku;
+ELSEIF NEW.status = "Dikembalikan" THEN
+UPDATE buku SET stok = stok + 1 WHERE id_buku = NEW.id_buku;
+END IF;
+END
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE TRIGGER `after_update_peminjaman` AFTER UPDATE ON `peminjaman` FOR EACH ROW BEGIN
+IF NEW.status = "Dikembalikan" AND OLD.status = "Dipinjam" THEN
+UPDATE buku SET stok = stok + 1 WHERE id_buku = NEW.id_buku;
+ELSEIF NEW.status = "Dipinjam" AND OLD.status = "Dikembalikan" THEN
+UPDATE buku SET stok = stok - 1 WHERE id_buku = NEW.id_buku;
+END IF;
+END
+$$
+DELIMITER ;
 
 -- --------------------------------------------------------
 
