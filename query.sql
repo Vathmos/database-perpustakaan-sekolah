@@ -320,6 +320,7 @@ INSERT INTO peminjaman (id_siswa, id_buku, tgl_pinjam, tgl_kembali, status) VALU
 CALL select_all_buku();
 CALL select_all_siswa();
 CALL select_all_peminjaman();
+
 CALL insert_buku ( "Sistem Operasi", "Dian Kurniawan", "Teknologi", 6 );
 CALL insert_buku ( "Jaringan Komputer", "Ahmad Fauzi", "Teknologi", 5 );
 CALL insert_buku ( "Cerita Rakyat Nusantara", "Lestari Dewi", "Sastra", 9 );
@@ -330,6 +331,7 @@ CALL insert_buku ( "Teknik Elektro", "Ridwan Hakim", "Teknik", 6 );
 CALL insert_buku ( "Fisika Modern", "Albert Einstein", "Sains", 4 );
 CALL insert_buku ( "Manajemen Waktu", "Steven Covey", "Pengembangan", 8 );
 CALL insert_buku ( "Strategi Belajar Efektif", "Tony Buzan", "Pendidikan", 6 );
+
 CALL insert_siswa ("Farhan Maulana", "XII-TKJ");
 CALL insert_siswa ("Gita Permata", "X-RPL");
 CALL insert_siswa ("Hadi Sucipto", "X-TKJ");
@@ -340,11 +342,13 @@ CALL insert_siswa ("Lintang Putri", "XII-TKJ");
 CALL insert_siswa ("Muhammad Rizky", "X-RPL");
 CALL insert_siswa ("Novi Andriana", "X-TKJ");
 CALL insert_siswa ("Olivia Hernanda", "XI-RPL");
+
 CALL insert_peminjaman ( 15, 7, "2025-02-01", "2025-02-08", "Dipinjam" );
 CALL insert_peminjaman ( 7, 1, "2025-01-29", "2025-02-05", "Dikembalikan" );
 CALL insert_peminjaman ( 8, 9, "2025-02-03", "2025-02-10", "Dipinjam" );
 CALL insert_peminjaman ( 13, 4, "2025-01-27", "2025-02-03", "Dikembalikan" );
 CALL insert_peminjaman ( 10, 11, "2025-02-01", "2025-02-08", "Dipinjam" );
+
 CALL list_siswa_pinjam();
 CALL list_siswa();
 CALL list_buku();
