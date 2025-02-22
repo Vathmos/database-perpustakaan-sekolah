@@ -1,3 +1,8 @@
-Nama : Ahmad Faris Widyawan  
-Database : MySQL  
-Visual tool : Visual Studio Code dengan extension Database Client
+## Technologies & Tools
+
+- **Database:** MySQL
+- **Code Editor:** Visual Studio Code with the Database Client extension
+- **Local Development Environment:** Laragon
+
+## Assignment By
+Ahmad Faris Widyawan
