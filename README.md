@@ -73,8 +73,8 @@ Sistem perpustakaan ini mencakup fitur-fitur berikut:
 1. **Clone Repository:**
 
    ```bash
-   git clone https://github.com/username/Database-Pepustakaan-Sekolah.git
-   cd Database-Pepustakaan-Sekolah
+   git clone https://github.com/vathmos/database-pepustakaan-sekolah.git
+   cd database-pepustakaan-sekolah
    ```
 
 2. **Import Database:**
