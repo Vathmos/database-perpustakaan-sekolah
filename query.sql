@@ -203,7 +203,6 @@ END $$
 
 DELIMITER;
 
-
 DELIMITER $$
 
 CREATE PROCEDURE kembalikan_buku(
@@ -289,7 +288,7 @@ FOR EACH ROW
 BEGIN
 IF NEW.status = "Dipinjam" THEN
 UPDATE buku SET stok = stok - 1 WHERE id_buku = NEW.id_buku;
-ELSE
+ELSE IF NEW.status = "Dikembalikan" THEN
 UPDATE buku SET stok = stok + 1 WHERE id_buku = NEW.id_buku;
 END IF;
 END $$
@@ -302,7 +301,7 @@ CREATE TRIGGER after_update_peminjaman
 AFTER INSERT ON peminjaman 
 FOR EACH ROW 
 BEGIN
-IF NEW.status = "Dipinjam" THEN
+IF NEW.status = "Dipinjam" AND OLD.status = "Dikembalikan" THEN
 UPDATE buku SET stok = stok - 1 WHERE id_buku = NEW.id_buku;
 ELSE
 UPDATE buku SET stok = stok + 1 WHERE id_buku = NEW.id_buku;
@@ -313,65 +312,218 @@ DELIMITER;
 -- Triggers
 
 -- Insertions
-INSERT INTO buku(judul_buku, penulis, kategori, stok) VALUES
-("Algoritma dan Pemrograman",	"Andi Wijaya"	,"Teknologi",5),
-("Dasar-dasar Database",	"Budi Santoso"	,"Teknologi",7),
-("Matematika Diskrit", "Rina Sari"	,"Matematika",4),
-("Sejarah Dunia", "John Smith"	,"Sejarah",3),
-("Pemrograman Web dengan PHP", "Eko Prasetyo"	,"Teknologi",8);
+INSERT INTO
+    buku (
+        judul_buku,
+        penulis,
+        kategori,
+        stok
+    )
+VALUES (
+        "Algoritma dan Pemrograman",
+        "Andi Wijaya",
+        "Teknologi",
+        5
+    ),
+    (
+        "Dasar-dasar Database",
+        "Budi Santoso",
+        "Teknologi",
+        7
+    ),
+    (
+        "Matematika Diskrit",
+        "Rina Sari",
+        "Matematika",
+        4
+    ),
+    (
+        "Sejarah Dunia",
+        "John Smith",
+        "Sejarah",
+        3
+    ),
+    (
+        "Pemrograman Web dengan PHP",
+        "Eko Prasetyo",
+        "Teknologi",
+        8
+    );
 
-INSERT INTO siswa(nama, kelas) VALUES
-("Andi Saputra", "X-RPL"),
-("Budi Wijaya", "X-TKJ"),
-("Citra Lestari", "XI-RPL"),
-("Dewi Kurniawan", "XI-TKJ"),
-("Eko Prasetyo", "XII-RPL");
+INSERT INTO
+    siswa (nama, kelas)
+VALUES ("Andi Saputra", "X-RPL"),
+    ("Budi Wijaya", "X-TKJ"),
+    ("Citra Lestari", "XI-RPL"),
+    ("Dewi Kurniawan", "XI-TKJ"),
+    ("Eko Prasetyo", "XII-RPL");
 
-INSERT INTO peminjaman(id_siswa, id_buku, tgl_pinjam, tgl_kembali, status) VALUES
-(11, 2, "2025-02-01", "2025-02-08", "Dipinjam"),
-(2, 5, "2025-01-28", "2025-02-04", "Dikembalikan"),
-(3, 8, "2025-02-02", "2025-02-09", "Dipinjam"),
-(4, 10, "2025-01-30", "2025-02-06", "Dikembalikan"),
-(5, 3, "2025-01-25", "2025-02-01", "Dikembalikan");
+INSERT INTO
+    peminjaman (
+        id_siswa,
+        id_buku,
+        tgl_pinjam,
+        tgl_kembali,
+        status
+    )
+VALUES (
+        11,
+        2,
+        "2025-02-01",
+        "2025-02-08",
+        "Dipinjam"
+    ),
+    (
+        2,
+        5,
+        "2025-01-28",
+        "2025-02-04",
+        "Dikembalikan"
+    ),
+    (
+        3,
+        8,
+        "2025-02-02",
+        "2025-02-09",
+        "Dipinjam"
+    ),
+    (
+        4,
+        10,
+        "2025-01-30",
+        "2025-02-06",
+        "Dikembalikan"
+    ),
+    (
+        5,
+        3,
+        "2025-01-25",
+        "2025-02-01",
+        "Dikembalikan"
+    );
 -- Insertions
 
 -- Calls
-CALL select_all_buku();
-CALL select_all_siswa();
-CALL select_all_peminjaman();
- 
-CALL insert_buku("Sistem Operasi" ,"Dian Kurniawan", "Teknologi", 6);
-CALL insert_buku("Jaringan Komputer" ,"Ahmad Fauzi", "Teknologi", 5);
-CALL insert_buku("Cerita Rakyat Nusantara" ,"Lestari Dewi", "Sastra", 9);
-CALL insert_buku("Bahasa Inggris untuk Pemula" ,"Jane Doe", "Bahasa	", 10);
-CALL insert_buku("Biologi Dasar" ,"Budi Rahman", "Sains", 7);
-CALL insert_buku("Kimia Organik" ,"Siti Aminah", "Sains", 5);
-CALL insert_buku("Teknik Elektro" ,"Ridwan Hakim", "Teknik", 6);
-CALL insert_buku("Fisika Modern" ,"Albert Einstein", "Sains", 4);
-CALL insert_buku("Manajemen Waktu" ,"Steven Covey", "Pengembangan", 8);
-CALL insert_buku("Strategi Belajar Efektif" ,"Tony Buzan", "Pendidikan", 6);
+CALL select_all_buku ();
 
-CALL insert_siswa("Farhan Maulana", "XII-TKJ");
-CALL insert_siswa("Gita Permata", "X-RPL");
-CALL insert_siswa("Hadi Sucipto", "X-TKJ");
-CALL insert_siswa("Intan Permadi", "XI-RPL");
-CALL insert_siswa("Joko Santoso", "XI-TKJ");
-CALL insert_siswa("Kartika Sari", "XII-RPL");
-CALL insert_siswa("Lintang Putri", "XII-TKJ");
-CALL insert_siswa("Muhammad Rizky", "X-RPL");
-CALL insert_siswa("Novi Andriana", "X-TKJ");
-CALL insert_siswa("Olivia Hernanda", "XI-RPL");
+CALL select_all_siswa ();
 
-CALL insert_peminjaman(15, 7, "2025-02-01", "2025-02-08", "Dipinjam");
-CALL insert_peminjaman(7, 1, "2025-01-29", "2025-02-05", "Dikembalikan");
-CALL insert_peminjaman(8, 9, "2025-02-03", "2025-02-10", "Dipinjam");
-CALL insert_peminjaman(13, 4, "2025-01-27", "2025-02-03", "Dikembalikan");
-CALL insert_peminjaman(10, 11, "2025-02-01", "2025-02-08", "Dipinjam");
+CALL select_all_peminjaman ();
 
-CALL list_siswa_pinjam();
+CALL insert_buku (
+    "Sistem Operasi",
+    "Dian Kurniawan",
+    "Teknologi",
+    6
+);
 
-CALL list_siswa();
+CALL insert_buku (
+    "Jaringan Komputer",
+    "Ahmad Fauzi",
+    "Teknologi",
+    5
+);
 
-CALL list_buku();
+CALL insert_buku (
+    "Cerita Rakyat Nusantara",
+    "Lestari Dewi",
+    "Sastra",
+    9
+);
+
+CALL insert_buku (
+    "Bahasa Inggris untuk Pemula",
+    "Jane Doe",
+    "Bahasa	",
+    10
+);
+
+CALL insert_buku ( "Biologi Dasar", "Budi Rahman", "Sains", 7 );
+
+CALL insert_buku ( "Kimia Organik", "Siti Aminah", "Sains", 5 );
+
+CALL insert_buku ( "Teknik Elektro", "Ridwan Hakim", "Teknik", 6 );
+
+CALL insert_buku ( "Fisika Modern", "Albert Einstein", "Sains", 4 );
+
+CALL insert_buku (
+    "Manajemen Waktu",
+    "Steven Covey",
+    "Pengembangan",
+    8
+);
+
+CALL insert_buku (
+    "Strategi Belajar Efektif",
+    "Tony Buzan",
+    "Pendidikan",
+    6
+);
+
+CALL insert_siswa ("Farhan Maulana", "XII-TKJ");
+
+CALL insert_siswa ("Gita Permata", "X-RPL");
+
+CALL insert_siswa ("Hadi Sucipto", "X-TKJ");
+
+CALL insert_siswa ("Intan Permadi", "XI-RPL");
+
+CALL insert_siswa ("Joko Santoso", "XI-TKJ");
+
+CALL insert_siswa ("Kartika Sari", "XII-RPL");
+
+CALL insert_siswa ("Lintang Putri", "XII-TKJ");
+
+CALL insert_siswa ("Muhammad Rizky", "X-RPL");
+
+CALL insert_siswa ("Novi Andriana", "X-TKJ");
+
+CALL insert_siswa ("Olivia Hernanda", "XI-RPL");
+
+CALL insert_peminjaman (
+    15,
+    7,
+    "2025-02-01",
+    "2025-02-08",
+    "Dipinjam"
+);
+
+CALL insert_peminjaman (
+    7,
+    1,
+    "2025-01-29",
+    "2025-02-05",
+    "Dikembalikan"
+);
+
+CALL insert_peminjaman (
+    8,
+    9,
+    "2025-02-03",
+    "2025-02-10",
+    "Dipinjam"
+);
+
+CALL insert_peminjaman (
+    13,
+    4,
+    "2025-01-27",
+    "2025-02-03",
+    "Dikembalikan"
+);
+
+CALL insert_peminjaman (
+    10,
+    11,
+    "2025-02-01",
+    "2025-02-08",
+    "Dipinjam"
+);
+
+CALL list_siswa_pinjam ();
+
+CALL list_siswa ();
+
+CALL list_buku ();
 
 -- Calls
